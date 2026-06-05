@@ -1,44 +1,105 @@
 # Interpretable Machine Learning for Alzheimer's Disease Classification with Fairness Analysis
 
-## Overview
+Binary classification pipeline for dementia status (demented vs. non-demented) using OASIS-1 and OASIS-2 clinical data, with SHAP explainability and fairness analysis across demographic subgroups.
 
-This repository contains the foundational planning and technical architecture documents for building an interpretable, fairness-aware machine learning pipeline designed to classify Alzheimer's Disease dementia status. The project leverages tabular clinical data from the OASIS-1 (cross-sectional) and OASIS-2 (longitudinal) datasets.
+## Project Structure
 
-The primary goal is to build a binary classification model (demented vs. non-demented) that not only achieves high predictive performance but also provides clinically interpretable feature importance via SHAP analysis and evaluates model equity across demographic subgroups.
+```
+├── data/
+│   ├── raw/                          # Place raw OASIS CSVs here
+│   ├── processed/                    # Cleaned and merged outputs
+│   └── data_dictionary.md            # Variable documentation
+├── docs/                             # Planning documents (PRD, TRD, study guide)
+├── notebooks/
+│   ├── 01_EDA.ipynb
+│   ├── 02_Preprocessing.ipynb
+│   ├── 03_Feature_Engineering.ipynb
+│   ├── 04_Modeling.ipynb
+│   ├── 05_SHAP_Explainability.ipynb
+│   └── 06_Fairness_Analysis.ipynb
+├── src/
+│   ├── data_loader.py                # Load & merge datasets
+│   ├── preprocessing.py              # Cleaning, imputation, encoding
+│   ├── feature_engineering.py        # New feature creation
+│   ├── modeling.py                   # Train/evaluate all models
+│   ├── explainability.py             # SHAP functions
+│   ├── fairness.py                   # Subgroup evaluation
+│   └── utils.py                      # Shared utilities
+├── results/
+│   ├── figures/                      # Saved plots
+│   ├── tables/                       # CSV result tables
+│   └── models/                       # Saved model objects (.pkl)
+├── paper/
+│   ├── draft.docx
+│   └── references.bib
+├── requirements.txt
+└── README.md
+```
 
-## Repository Contents
+## Documentation
 
-This repository currently holds the core documentation driving the project:
+Planning and domain context live in `docs/`:
 
-* **`Biology_Topics_Study_Guide.md`**: A structured study roadmap covering essential brain anatomy, the neuroscience of aging, Alzheimer's pathology, and clinical assessment tools like the MMSE and CDR. This ensures all feature engineering and model outputs are grounded in clinical reality.
+- `PRD_Alzheimers_Classification.md` — product requirements, features, success metrics
+- `TRD_Alzheimers_Classification.md` — technical architecture, pipeline specs
+- `Biology_Topics_Study_Guide.md` — clinical background for interpreting results
 
+## Setup
 
-* **`PRD_Alzheimers_Classification.md`**: The Product Requirements Document detailing the project's vision, problem statement, required datasets, feature engineering logic, and success metrics targeting peer-reviewed publication.
+```bash
+# Create virtual environment
+python -m venv alzheimers_env
+alzheimers_env\Scripts\activate     # Windows
+# source alzheimers_env/bin/activate  # Mac/Linux
 
+# Install dependencies
+pip install -r requirements.txt
+```
 
-* **`TRD_Alzheimers_Classification.md`**: The Technical Requirements Document outlining the system architecture, required Python environment, data pipeline specifications, model evaluation standards, and fairness metric implementations.
+## Data
 
+Download OASIS datasets and place them in `data/raw/`:
 
+| File | Dataset |
+|---|---|
+| `oasis_cross-sectional.csv` | OASIS-1 |
+| `oasis_longitudinal.csv` | OASIS-2 |
 
-## Technical Stack & Methodologies
+Sources: [oasis-brains.org](https://www.oasis-brains.org/) or [Kaggle](https://www.kaggle.com/datasets/jboysen/mri-and-alzheimers)
 
-As outlined in the TRD, the upcoming implementation will utilize:
+## Workflow
 
-* **Language:** Python >= 3.9
+Run notebooks in order from the `notebooks/` directory:
 
+1. **01_EDA** — exploratory analysis and visualizations
+2. **02_Preprocessing** — cleaning, imputation, encoding
+3. **03_Feature_Engineering** — clinically motivated features
+4. **04_Modeling** — train 8+ models with 5-fold CV
+5. **05_SHAP_Explainability** — global and local SHAP plots
+6. **06_Fairness_Analysis** — subgroup performance and disparity metrics
 
-* **Machine Learning:** scikit-learn, XGBoost, LightGBM, CatBoost
+Or use the `src/` modules directly:
 
+```python
+from src.data_loader import load_and_merge
+from src.preprocessing import preprocess_pipeline
+from src.feature_engineering import engineer_features
+from src.modeling import compare_all_models
 
-* **Imbalanced Learning:** SMOTE via `imbalanced-learn`
+df1, df2, merged = load_and_merge()
+df = engineer_features(preprocess_pipeline(merged))
+results = compare_all_models(df[feature_cols], df['target'])
+```
 
-* **Explainability (XAI):** SHAP and LIME
+## Success Metrics
 
+| Metric | Target |
+|---|---|
+| AUC-ROC | ≥ 0.88 |
+| F1-Score (weighted) | ≥ 0.82 |
+| Sensitivity | ≥ 0.80 |
+| Specificity | ≥ 0.80 |
 
-* **Fairness Analysis:** Fairlearn and AIF360
+## License
 
-
-
-## Getting Started
-
-To view the project plans, simply open the respective `.md` files. If you are setting up the development environment, please refer to the environment and dependencies section within `TRD_Alzheimers_Classification.md`.
+See repository license. OASIS data usage is subject to the OASIS data use agreement.
