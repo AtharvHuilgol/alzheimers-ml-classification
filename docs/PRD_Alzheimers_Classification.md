@@ -48,8 +48,7 @@ This project addresses all three gaps.
 
 | Stakeholder | Role | Interest |
 |---|---|---|
-| Researcher (you) | Lead author | Build, analyze, and publish |
-| Co-author / Supervisor | Optional | Guidance, review |
+| Researchers | Lead authors | Build, analyze, and publish |
 | Medical community | End user of findings | Clinical decision support insights |
 | IEEE Access / Diagnostics | Publisher | Novelty, rigor, reproducibility |
 | Future researchers | Readers | Reproducible baseline |
